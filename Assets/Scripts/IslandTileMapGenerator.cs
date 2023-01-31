@@ -114,11 +114,13 @@ public class IslandTileMapGenerator : MonoBehaviour
         GameObject tilePrefab = tileset[tileId];
         GameObject tileGroup = tileGroups[tileId];
         GameObject tile = Instantiate(tilePrefab, tileGroup.transform);
+        tile.isStatic = true;
 
         tile.name = string.Format("tile_x{0}_y{1}", x, y);
         tile.transform.localPosition = new Vector2(x * TileSize, y * TileSize);
         TileGrid[x].Add(tile);
     }
+
     private float FallOffMap(float x, float y, int sizeX, int sizeY, float islandSize)
     {
         float gradient = 1;
@@ -130,6 +132,7 @@ public class IslandTileMapGenerator : MonoBehaviour
         return gradient;
     }
 
+    // Utility tool just for printing metrix.
     private void MapLogger(float[,] map){
         StringBuilder sb = new StringBuilder();
         // print("X:" + map.GetLength(0) + "Y:" + map.GetLength(1));
