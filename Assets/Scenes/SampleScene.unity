@@ -149,7 +149,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -438,12 +438,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f833ef9b5f4f34a8030969df6b4fec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TileSizeX: 100
-  TileSizeY: 100
+  TileSizeX: 200
+  TileSizeY: 150
   NoiseScale: 0.55
   IslandSize: 50
-  NoiseOctaves: 5
-  Seed: 72263496
+  NoiseOctaves: 8
+  Seed: 78142088
   prefabWater: {fileID: 11400000, guid: 8ccd8baff482b1e4ba7abbcb5d4d9eb8, type: 2}
   prefabSand: {fileID: 11400000, guid: b2221fffc6f55d74c8e4bd258298ffe2, type: 2}
   prefabGrass: {fileID: 11400000, guid: cef5b44cb746c124a9c4f3f85d138470, type: 2}
