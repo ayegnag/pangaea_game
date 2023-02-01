@@ -32,19 +32,36 @@ public class CameraMovement : MonoBehaviour
         float mouseX = Input.mousePosition.x;
         float mouseY = Input.mousePosition.y;
         // Debug.Log(mouseX + " : " + mouseY);
+        Vector3 direction = Vector3.zero;
+
         if(mouseX < MarginCheck) {
-           transform.position += new Vector3(Time.deltaTime * speed * -1, 0f, 0f);
+         //   transform.position += new Vector3(Time.deltaTime * speed * -1, 0f, 0f);
+         direction.x -= 1; 
         }
         else if(mouseX > Screen.width - MarginCheck) {
-           transform.position += new Vector3(Time.deltaTime * speed, 0f, 0f);
+         //   transform.position += new Vector3(Time.deltaTime * speed, 0f, 0f);
+            direction.x += 1; 
         }
         if(mouseY < MarginCheck) {
-           transform.position += new Vector3(0f,Time.deltaTime * speed * -1, 0f);
+         //   transform.position += new Vector3(0f,Time.deltaTime * speed * -1, 0f);
+            direction.y -= 1; 
         }
         else if(mouseY > Screen.height - MarginCheck) {
-           transform.position += new Vector3(0f,Time.deltaTime * speed, 0f);
+         //   transform.position += new Vector3(0f,Time.deltaTime * speed, 0f);
+            direction.y += 1; 
         }
-        // TODO: Add logic to balance double acceleration by both axis in the corners.
+        direction = GetSafeNormalization(direction);
+        direction = direction * speed * Time.deltaTime;
+      //   Debug.Log(direction);
+        transform.position += new Vector3(direction.x, direction.y, 0f);
         // transform.position += new Vector3(Input.GetAxisRaw("Mouse X") * Time.deltaTime * speed, Input.GetAxisRaw("Mouse Y") * Time.deltaTime * speed, 0f);
+    }
+
+    private static Vector3 GetSafeNormalization(Vector3 vector) {
+      if (vector == Vector3.zero) {
+         return Vector3.zero;
+      }
+      vector.Normalize();
+      return vector;
     }
 }
