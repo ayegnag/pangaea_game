@@ -82,8 +82,8 @@ public class IslandTileMapGenerator : MonoBehaviour
             }
         }
         
-        print("Map: ");
-        MapLogger(terrainMap);
+        // print("Map: ");
+        // MapLogger(terrainMap);
     }
 
     private float Noisefunction(float x, float y, Vector2 Origin)
@@ -126,9 +126,9 @@ public class IslandTileMapGenerator : MonoBehaviour
         float gradient = 1;
 
         gradient /= (x * y) / (sizeX * sizeY) * (1 - (x / sizeX)) * (1 - (y / sizeY));
-        gradient -= 16;
-        gradient /= islandSize;
-
+        // gradient -= 16;
+        // gradient /= islandSize;
+        Debug.Log(gradient);
         return gradient;
     }
 

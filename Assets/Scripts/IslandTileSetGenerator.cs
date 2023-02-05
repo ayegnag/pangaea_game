@@ -102,9 +102,9 @@ public class IslandTileSetGenerator : MonoBehaviour
         float gradient = 1;
 
         gradient /= (x * y) / (sizeX * sizeY) * (1 - (x / sizeX)) * (1 - (y / sizeY));
-        gradient -= 16;
-        gradient /= islandSize;
-
+        // gradient -= 16;
+        // gradient /= islandSize;
+        Debug.Log(gradient);
         return gradient;
     }
 
