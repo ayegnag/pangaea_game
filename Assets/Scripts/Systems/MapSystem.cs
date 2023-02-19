@@ -6,27 +6,29 @@ namespace KOI
 {
     public class MapSystem : GameSystem
     {
+        public static event EventHandler<OnMapEventArgs> OnUpdateMapRender;
         private WorldMap _worldMap;
+        private WorldGenerator _worldGenerator;
+
         public override void Init()
         {
             SetupEvents();
+            SelectMapType();
+            GenerateWorlMap();
+        }
+
+        private void SelectMapType()
+        {   
+            // Add logic here to select between different Map Generators
+            _worldGenerator = new StandardMapGenerator();
         }
 
         private void GenerateWorlMap()
         {
             _worldMap = new WorldMap(MapConfig.WorldMapWidth, MapConfig.WorldMapHeight);
-
-            for (int id = 0; id < _worldMap.Area; id ++)
-            {
-                Cell cell = new Cell
-                {
-                    Id = id,
-                    Solid = false,
-                    Position = IdToPosition(id),
-                    TerrainType = TerrainType.Water,
-                    FoliageType = FoliageType.None
-                };
-            }
+            _worldGenerator.Initialize(_worldMap);
+            _worldMap = _worldGenerator.GenerateMap();
+            OnUpdateMapRender?.Invoke(this, new OnMapEventArgs { WorldMap = _worldMap});
         }
         private void SetupEvents()
         {
@@ -40,13 +42,6 @@ namespace KOI
         public override void Quit()
         {
             GameStateManager.OnTick -= Tick;
-        }
-
-        private int2 IdToPosition(int id)
-        {
-            int x = id % _worldMap.Width - _worldMap.Width;
-            int y = id / _worldMap.Height - _worldMap.Width;
-            return new int2(x, y);
         }
     }
 }

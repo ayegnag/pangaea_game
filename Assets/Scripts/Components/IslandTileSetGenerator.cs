@@ -84,7 +84,7 @@ namespace KOI
                 for (int y = 0; y < TileSizeY; y++, i++)
                 {
                     float a = Noisefunction(x, y, Org);
-                    a = (a * 0.8f) - gradientMap[x, y];
+                    a = (a * 0.8f) - gradientMap[x, y]; // 0.9 => 0.72 - 1 = -0.29
                     // aMap[x, y] = a;
                     // a = (a + (1-distanceSquared(x, y)));
                     // int tileId = 0;
