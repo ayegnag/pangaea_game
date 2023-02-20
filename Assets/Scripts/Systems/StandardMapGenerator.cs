@@ -8,6 +8,7 @@ namespace KOI
     {
         private float[,] _gradientMap;
         private WorldMap _worldMap;
+        private MathUtil _mathUtil = new MathUtil();
 
         public void Initialize(WorldMap worldMap)
         {
@@ -24,8 +25,13 @@ namespace KOI
             {
                 for (int y = 0; y < MapConfig.WorldMapHeight; y++, i++)
                 {
+                    // get original noise map
                     float a = Noisefunction(x, y, Org);
-                    a = (a * 0.8f) - _gradientMap[x, y]; // 0.9 => 0.72 - 1 = -0.29
+                    // clear out the edges to get a central island
+                    // a = (a * 0.8f) - _gradientMap[x, y]; // 0.9 => 0.72 - 1 = -0.29
+                    a = a - _gradientMap[x, y]; // 0.9 => 0.72 - 1 = -0.29
+                    a = _mathUtil.LinearConverstion(a, 0f, 1.4f, 0f, 1f);
+                    // identify tiles
                     TerrainType terrainEnum = GetTerrainTypeFromNoise(a);
                     VegetationType treeEnum = GetTreeTypeFromTerrain(terrainEnum);
                     Cell cell = new Cell(id)
@@ -45,15 +51,18 @@ namespace KOI
         
         private float Noisefunction(float x, float y, Vector2 Origin)
         {
-            float a = 0, noisesize = MapConfig.NoiseScale, opacity = 1;
+            float a = 0, noiseScale = MapConfig.NoiseScale, opacity = 1;
 
             for (int octaves = 0; octaves < MapConfig.NoiseOctaves; octaves++)
             {
-                float xVal = (x / (noisesize * MapConfig.WorldMapWidth)) + Origin.x;
-                float yVal = (y / (noisesize * MapConfig.WorldMapHeight)) - Origin.y;
-                float z = noise.snoise(new float2(xVal, yVal));
+                // float xVal = (x / (noiseScale * MapConfig.WorldMapWidth)) + Origin.x;
+                // float yVal = (y / (noiseScale * MapConfig.WorldMapHeight)) - Origin.y;
+                float xVal = (x * noiseScale) + Origin.x;
+                float yVal = (y * noiseScale) + Origin.y;
+                // float z = noise.pnoise(new float2(xVal, yVal));
+                float z = Mathf.PerlinNoise(xVal, yVal);
                 a += Mathf.InverseLerp(0, 1, z) / opacity;
-                noisesize /= 2f;
+                noiseScale /= 2f;
                 opacity *= 2f;
             }
             return a;
@@ -102,14 +111,28 @@ namespace KOI
         
         void GenerateRectangularGradient()
         {
+            int halfWidth = MapConfig.WorldMapWidth / 2;
+            int halfHeight = MapConfig.WorldMapHeight / 2;
+
             _gradientMap = new float[MapConfig.WorldMapWidth, MapConfig.WorldMapHeight];
             for (int x = 0; x < MapConfig.WorldMapWidth; x++)
             {
                 for (int y = 0; y < MapConfig.WorldMapHeight; y++)
                 {
-                    float xValue = Math.Abs(x * 2f - MapConfig.WorldMapWidth) / MapConfig.WorldMapWidth;
-                    float yValue = Math.Abs(y * 2f - MapConfig.WorldMapHeight) / MapConfig.WorldMapHeight;
-                    float gradient = Math.Max(xValue, yValue);
+                    // float xValue = Math.Abs(x * 2f - MapConfig.WorldMapWidth) / MapConfig.WorldMapWidth;
+                    // float yValue = Math.Abs(y * 2f - MapConfig.WorldMapHeight) / MapConfig.WorldMapHeight;
+                    // float gradient = Math.Max(xValue, yValue);
+                    float colorValue;
+
+                    x = x > halfWidth ? MapConfig.WorldMapWidth - x : x;
+                    y = y > halfHeight ? MapConfig.WorldMapHeight - y : y;
+
+                    int smaller = x < y ? x : y;
+                    colorValue = smaller / (float)halfWidth;
+
+                    colorValue = 1 - colorValue;
+                    colorValue *= colorValue * colorValue;
+                    float gradient = Math.Max(colorValue, colorValue);
                     _gradientMap[x, y] = gradient;
                 }
             }
