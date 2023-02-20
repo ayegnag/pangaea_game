@@ -28,9 +28,9 @@ namespace KOI
                     // get original noise map
                     float a = Noisefunction(x, y, Org);
                     // clear out the edges to get a central island
-                    // a = (a * 0.8f) - _gradientMap[x, y]; // 0.9 => 0.72 - 1 = -0.29
-                    a = a - _gradientMap[x, y]; // 0.9 => 0.72 - 1 = -0.29
-                    a = _mathUtil.LinearConverstion(a, 0f, 1.4f, 0f, 1f);
+                    a = (a * 0.8f) - _gradientMap[x, y]; // 0.9 => 0.72 - 1 = -0.29
+                    // a = a - _gradientMap[x, y]; // 0.9 - 1 = -0.1
+                    a = _mathUtil.LinearConverstion(a, -0.2f, 1.4f, 0f, 1f);
                     // identify tiles
                     TerrainType terrainEnum = GetTerrainTypeFromNoise(a);
                     VegetationType treeEnum = GetTreeTypeFromTerrain(terrainEnum);
@@ -55,11 +55,16 @@ namespace KOI
 
             for (int octaves = 0; octaves < MapConfig.NoiseOctaves; octaves++)
             {
-                // float xVal = (x / (noiseScale * MapConfig.WorldMapWidth)) + Origin.x;
-                // float yVal = (y / (noiseScale * MapConfig.WorldMapHeight)) - Origin.y;
-                float xVal = (x * noiseScale) + Origin.x;
-                float yVal = (y * noiseScale) + Origin.y;
+                // Scattered islands with Jaggered edges
+                float xVal = (x / (noiseScale * MapConfig.WorldMapWidth)) + Origin.x;
+                float yVal = (y / (noiseScale * MapConfig.WorldMapHeight)) - Origin.y;
+                
+                // Smooth blob like islands
+                // float xVal = (x * noiseScale) + Origin.x;
+                // float yVal = (y * noiseScale) + Origin.y;
+                
                 // float z = noise.pnoise(new float2(xVal, yVal));
+                
                 float z = Mathf.PerlinNoise(xVal, yVal);
                 a += Mathf.InverseLerp(0, 1, z) / opacity;
                 noiseScale /= 2f;
@@ -119,58 +124,20 @@ namespace KOI
             {
                 for (int y = 0; y < MapConfig.WorldMapHeight; y++)
                 {
-                    // float xValue = Math.Abs(x * 2f - MapConfig.WorldMapWidth) / MapConfig.WorldMapWidth;
-                    // float yValue = Math.Abs(y * 2f - MapConfig.WorldMapHeight) / MapConfig.WorldMapHeight;
-                    // float gradient = Math.Max(xValue, yValue);
-                    float colorValue;
-
-                    x = x > halfWidth ? MapConfig.WorldMapWidth - x : x;
-                    y = y > halfHeight ? MapConfig.WorldMapHeight - y : y;
-
-                    int smaller = x < y ? x : y;
-                    colorValue = smaller / (float)halfWidth;
-
-                    colorValue = 1 - colorValue;
-                    colorValue *= colorValue * colorValue;
-                    float gradient = Math.Max(colorValue, colorValue);
-                    _gradientMap[x, y] = gradient;
+                    // if (((float)x > MapConfig.WorldMapWidth * 0.2 && (float)x < MapConfig.WorldMapWidth * 0.8 )
+                    //     && ((float)y > MapConfig.WorldMapHeight * 0.2 && (float)y < MapConfig.WorldMapHeight * 0.8 ))
+                    // {
+                    //     _gradientMap[x, y] = 0; 
+                    // }
+                    // else
+                    // {
+                        float xValue = Math.Abs(x * 2f - MapConfig.WorldMapWidth) / MapConfig.WorldMapWidth;
+                        float yValue = Math.Abs(y * 2f - MapConfig.WorldMapHeight) / MapConfig.WorldMapHeight;
+                        float gradient = Math.Max(xValue, yValue);
+                        _gradientMap[x, y] = gradient;
+                    // }
                 }
             }
         }
-
-        // public Color[][] GenerateSquareGradient()
-        // {
-        //     int width = 500;
-        //     int height = 500;
-        //     int halfWidth = width / 2;
-        //     int halfHeight = height / 2;
-
-        //     Color[][] gradient = new Color[width][];
-
-        //     for (int i = 0; i < width; i++)
-        //     {
-        //         gradient[i] = new Color[height];
-
-        //         for (int j = 0; j < height; j++)
-        //         {
-        //             int x = i;
-        //             int y = j;
-
-        //             float colorValue;
-
-        //             x = x > halfWidth ? width - x : x;
-        //             y = y > halfHeight ? height - y : y;
-
-        //             int smaller = x < y ? x : y;
-        //             colorValue = smaller / (float)halfWidth;
-
-        //             colorValue = 1 - colorValue;
-        //             colorValue *= colorValue * colorValue;
-        //             gradient[i][j] = new Color(colorValue, colorValue, colorValue);
-        //         }
-        //     }
-
-        //     return gradient;
-        // }
     }
 }
