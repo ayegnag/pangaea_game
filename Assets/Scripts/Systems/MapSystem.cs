@@ -35,10 +35,86 @@ namespace KOI
             GameStateManager.OnTick += Tick;
         }
 
+		public Cell GetCell(int id)
+		{
+			if (id >= _worldMap.Area) return null;
+
+			return _worldMap.Cells[id];
+		}
+
+		public Cell GetCell(int x, int y)
+		{
+			int cellId = PositionToId(new int2(x, y));
+            Debug.Log(x +" " + y + " " + cellId);
+			return GetCell(cellId);
+		}
+
+		public Cell GetCell(int2 position)
+		{
+			return GetCell(position.x, position.y);
+		}
+
+
+        public bool OnMap(int x, int y)
+		{
+			bool insideHorizontalBounds = x >= 0 && x <= _worldMap.Width;
+			bool insideVerticalBounds = y >= 0 && y <= _worldMap.Height;
+
+			return insideHorizontalBounds && insideVerticalBounds;
+		}
+
+		public bool IsOccupied(int x, int y)
+		{
+			if (OnMap(x, y))
+			{
+				Cell cell = GetCell(x, y);
+				Utils.DumpToConsole(cell);
+				return cell.Occupied;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		public bool IsOccupied(int2 position)
+		{
+			return IsOccupied(position.x, position.y);
+		}
+
+		public int2 GetOpenCellPosition()
+		{
+			int2 cellPosition;
+
+			do
+			{
+				cellPosition = new int2(
+					Utils.RandomRange(0, _worldMap.Width),
+					Utils.RandomRange(0, _worldMap.Height)
+				);
+			}
+			while (IsOccupied(cellPosition));
+
+			return cellPosition;
+		}
+        		
+        public int PositionToId(int x, int y)
+		{
+			// return (x + _worldMap.Width) + _worldMap.Width * (y + _worldMap.Height);
+			return ((x * _worldMap.Height) + y);
+			// return x % 250 + y;
+		}
+
+		public int PositionToId(int2 position)
+		{
+			return PositionToId(position.x, position.y);
+		}
+
         protected override void Tick(object sender, OnTickArgs eventArgs)
         {
-            Debug.Log(eventArgs.Tick);
+            // Debug.Log(eventArgs.Tick);
         }
+
         public override void Quit()
         {
             GameStateManager.OnTick -= Tick;

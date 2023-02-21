@@ -8,7 +8,6 @@ namespace KOI
     {
         private float[,] _gradientMap;
         private WorldMap _worldMap;
-        private MathUtil _mathUtil = new MathUtil();
 
         public void Initialize(WorldMap worldMap)
         {
@@ -21,23 +20,23 @@ namespace KOI
             Vector2 Org = new Vector2(Mathf.Sqrt(MapConfig.Seed), Mathf.Sqrt(MapConfig.Seed));
             int id = 0;
 
-            for (int x = 0, i = 0; x < MapConfig.WorldMapWidth; x++)
+            for (int x = 0; x < MapConfig.WorldMapWidth; x++)
             {
-                for (int y = 0; y < MapConfig.WorldMapHeight; y++, i++)
+                for (int y = 0; y < MapConfig.WorldMapHeight; y++)
                 {
                     // get original noise map
                     float a = Noisefunction(x, y, Org);
                     // clear out the edges to get a central island
                     a = (a * 0.8f) - _gradientMap[x, y]; // 0.9 => 0.72 - 1 = -0.29
                     // a = a - _gradientMap[x, y]; // 0.9 - 1 = -0.1
-                    a = _mathUtil.LinearConverstion(a, -0.2f, 1.4f, 0f, 1f);
+                    a = Utils.LinearConverstion(a, -0.2f, 1.4f, 0f, 1f);
                     // identify tiles
                     TerrainType terrainEnum = GetTerrainTypeFromNoise(a);
                     VegetationType treeEnum = GetTreeTypeFromTerrain(terrainEnum);
                     Cell cell = new Cell(id)
                     {
                         Id = id,
-                        Solid = false,
+                        Occupied = IsOccupied(terrainEnum, treeEnum),
                         Position = new int2(x, y),
                         TerrainType = terrainEnum,
                         VegetationType = treeEnum
@@ -48,7 +47,12 @@ namespace KOI
             }
             return _worldMap;
         }
-        
+
+        private bool IsOccupied(TerrainType terrain, VegetationType tree)
+        {
+            return terrain == TerrainType.Water || tree != VegetationType.None ? true : false;
+        }
+
         private float Noisefunction(float x, float y, Vector2 Origin)
         {
             float a = 0, noiseScale = MapConfig.NoiseScale, opacity = 1;

@@ -8,20 +8,24 @@ namespace KOI
     {
         public static GameStateManager Instance { get; private set; }
         public MapSystem MapSystem { get; private set; }
+        public EntitySystem EntitySystem { get; private set; }
 
         public static event EventHandler<OnTickArgs> OnTick;
         private int _tick;
         private float _tickTimer;
+
         private void Awake()
         {
             EnforceSingletonInstance();
             MapSystem = new MapSystem();
+            EntitySystem = new EntitySystem();
             _tick = 0;
             _tickTimer = 0;
         }
 
         private void Start() {
-            MapSystem.Init();    
+            MapSystem.Init();
+            EntitySystem.Init();
         }
 
         private void EnforceSingletonInstance()
@@ -48,7 +52,8 @@ namespace KOI
         }
 
         private void OnDisable() {
-            MapSystem.Quit();    
+            MapSystem.Quit();
+            EntitySystem.Quit();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace KOI
     {
 
         public int Id;
-        public bool Solid;
+        public bool Occupied;
         public int2 Position;
 
         public TerrainType TerrainType;
