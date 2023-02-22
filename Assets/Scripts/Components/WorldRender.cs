@@ -112,7 +112,8 @@ namespace KOI
 		private Vector3 GridToWorld(int x, int y)
 		{
 			Vector3 worldPosition = _grid.CellToWorld(new Vector3Int(x, y, 0));
-			worldPosition.y += 1 / 4f;
+			worldPosition.x += 0.5f;
+			worldPosition.y += 0.5f;
 
 			return worldPosition;
 		}
