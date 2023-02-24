@@ -9,6 +9,12 @@ namespace KOI
 {
     public class WorldRender : MonoBehaviour
     {   
+		public enum DogAnimationType
+		{
+			Idle,
+			Walk,
+		}
+
 		private Grid _grid;
         
         private Tilemap _terrainTileMap;
@@ -67,6 +73,9 @@ namespace KOI
         {
             MapSystem.OnUpdateMapRender += UpdateMapRender;
             EntitySystem.OnCreateDog += CreateDogRenderData;
+
+			Dog.OnUpdateDogRenderDirection += UpdateDogRenderDirection;
+			Dog.OnUpdateDogRenderPosition += UpdateDogRenderPosition;
         }
 
         private void CreateDogRenderData(object sender, OnDogEventArgs eventArgs)
@@ -85,10 +94,10 @@ namespace KOI
 			dogRenderData.WorldGameObject.name = "Dog" + dog.Pack + dog.Id;
 
 			// dogRenderData.Animator = dogRenderData.WorldGameObject.GetComponent<Animator>();
-            Debug.Log(dog.Id);
+            // Debug.Log(dog.Id);
 
 			_dogRenderData[dog.Id] = dogRenderData;
-            Debug.Log(_dogRenderData);
+            // Debug.Log(_dogRenderData);
 
 			// PlayAnimation(dog, DogAnimationType.Idle);
             
@@ -97,6 +106,9 @@ namespace KOI
         private void OnDisable() {
             MapSystem.OnUpdateMapRender -= UpdateMapRender;
 			EntitySystem.OnCreateDog -= CreateDogRenderData;
+			
+			Dog.OnUpdateDogRenderDirection -= UpdateDogRenderDirection;
+			Dog.OnUpdateDogRenderPosition -= UpdateDogRenderPosition;
         }
 
         private void UpdateMapRender(object sender, OnMapEventArgs eventArgs)
@@ -122,6 +134,53 @@ namespace KOI
 		{
 			return GridToWorld(position.x, position.y);
 		}
+
+		
+		private void UpdateDogRenderDirection(object sender, OnDogEventArgs eventArgs)
+		{
+			PlayAnimation(eventArgs.Dog, DogAnimationType.Idle);
+		}
+
+		private void UpdateDogRenderPosition(object sender, OnDogEventArgs eventArgs)
+		{
+			StartCoroutine(MoveDog(eventArgs.Dog));
+		}
+
+		private IEnumerator MoveDog(Dog dog)
+		{
+			float timer = 0;
+			float duration = dog.Cooldown * GameConfig.TickDuration;
+
+			DogRenderData dogRenderData = _dogRenderData[dog.Id];
+
+			Vector3 startPosition = dogRenderData.WorldGameObject.transform.position;
+
+			Vector3 endPosition = GridToWorld(dog.Position);
+			// endPosition.z = dog.Id * 0.00001f;
+
+			// PlayAnimation(dog, DogAnimationType.Walk);
+
+			while (timer < duration)
+			{
+				timer += Time.deltaTime;
+
+				Vector3 newPosition = Vector3.Lerp(startPosition, endPosition, timer / duration);
+
+				dogRenderData.WorldGameObject.transform.position = newPosition;
+
+				yield return null;
+			}
+
+			dogRenderData.WorldGameObject.transform.position = endPosition;
+		}
+
+		private void PlayAnimation(Dog dog, DogAnimationType animationType)
+		{
+			DogRenderData dogRenderData = _dogRenderData[dog.Id];
+
+			// dogRenderData.Animator.Play($"Base Layer.{ dog.Pack }-{animationType}-{dog.Direction}");
+		}
+
         
     }
 }

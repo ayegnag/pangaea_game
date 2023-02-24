@@ -28,7 +28,7 @@ namespace KOI
 		{
 			Id = _nextDogId++;
 
-			Cooldown = Utils.RandomRange(4, 16);
+			Cooldown = Utils.RandomRange(2, 8);
 
 			Attributes = new DogAttributes
 			{
@@ -43,7 +43,7 @@ namespace KOI
 				[DogMovementStateType.Wander] = new DogWanderState(this)
 			};
 
-			_currentMovementState = _movementStates[DogMovementStateType.Idle];
+			_currentMovementState = _movementStates[DogMovementStateType.Wander];
 		}
 
 		public void Tick()

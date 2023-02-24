@@ -45,7 +45,7 @@ namespace KOI
 		public Cell GetCell(int x, int y)
 		{
 			int cellId = PositionToId(new int2(x, y));
-            Debug.Log(x +" " + y + " " + cellId);
+            // Debug.Log(x +" " + y + " " + cellId);
 			return GetCell(cellId);
 		}
 
@@ -68,7 +68,7 @@ namespace KOI
 			if (OnMap(x, y))
 			{
 				Cell cell = GetCell(x, y);
-				Utils.DumpToConsole(cell);
+				// Utils.DumpToConsole(cell);
 				return cell.Occupied;
 			}
 			else
@@ -97,6 +97,47 @@ namespace KOI
 
 			return cellPosition;
 		}
+
+		public bool IsPassable(int2 startPosition, Direction direction)
+		{
+			int2 endPosition = startPosition + MapConfig.DirectionVectors[direction];
+
+			if (IsOccupied(endPosition)) return false;
+
+			bool cardinalMove = (
+				direction == Direction.EE ||
+				direction == Direction.NN ||
+				direction == Direction.WW ||
+				direction == Direction.SS
+			);
+
+			if (cardinalMove) return true;
+
+			bool eastPassable = !IsOccupied(startPosition + MapConfig.DirectionVectors[Direction.EE]);
+			bool northPassable = !IsOccupied(startPosition + MapConfig.DirectionVectors[Direction.NN]);
+			bool westPassable = !IsOccupied(startPosition + MapConfig.DirectionVectors[Direction.WW]);
+			bool southPassable = !IsOccupied(startPosition + MapConfig.DirectionVectors[Direction.SS]);
+
+			if (direction == Direction.NE)
+			{
+				return northPassable && eastPassable;
+			}
+			else if (direction == Direction.NW)
+			{
+				return northPassable && westPassable;
+			}
+			else if (direction == Direction.SE)
+			{
+				return southPassable && eastPassable;
+			}
+			else if (direction == Direction.SW)
+			{
+				return southPassable && westPassable;
+			}
+
+			return false;
+		}
+
         		
         public int PositionToId(int x, int y)
 		{

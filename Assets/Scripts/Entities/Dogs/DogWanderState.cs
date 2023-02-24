@@ -12,19 +12,19 @@ namespace KOI
 
 				_dog.Direction = newDirection;
 
-				// if (GameStateManager.Instance.MapSystem.IsPassable(_dog.Position, newDirection))
-				// {
-				// 	_dog.Cooldown = MapConfig.DirectionCosts[newDirection];
-				// 	_dog.Position += MapConfig.DirectionVectors[newDirection];
+				if (GameStateManager.Instance.MapSystem.IsPassable(_dog.Position, newDirection))
+				{
+					_dog.Cooldown = MapConfig.DirectionCosts[newDirection];
+					_dog.Position += MapConfig.DirectionVectors[newDirection];
 
-				// 	_dog.UpdateRenderPosition();
-				// }
-				// else
-				// {
-				// 	_dog.Cooldown = 4;
+					_dog.UpdateRenderPosition();
+				}
+				else
+				{
+					_dog.Cooldown = 4;
 
-				// 	_dog.UpdateRenderDirection();
-				// }
+					_dog.UpdateRenderDirection();
+				}
 			}
 		}
 	}
