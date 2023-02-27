@@ -41,7 +41,8 @@ namespace KOI
 				[TerrainType.Sand] = Resources.Load<Tile>("Tiles/Sand"),
 				[TerrainType.Ground] = Resources.Load<Tile>("Tiles/Grass"),
 				[TerrainType.Mountain] = Resources.Load<Tile>("Tiles/Stone"),
-				[TerrainType.Ice] = Resources.Load<Tile>("Tiles/Ice")
+				[TerrainType.Ice] = Resources.Load<Tile>("Tiles/Ice"),
+				[TerrainType.Test] = Resources.Load<Tile>("Tiles/Test")
 			};
 
             _treeTiles = new Dictionary<VegetationType, Tile>

@@ -6,6 +6,7 @@ namespace KOI
         Sand,
         Ground,
         Mountain,
-        Ice
+        Ice,
+        Test
     }
 }

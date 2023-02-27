@@ -136,7 +136,7 @@ namespace KOI
 }
 
 // Notes:
-// 1. Higher noiseScale leads to more land feature fragmentation
+// 1. Higher noiseScale leads to lesser land feature fragmentation
 // 2. Higher octaves lead to more jaggedness
 // 3. Higher radius leads to larger island
 // 4. Higher slope leads to a lesser micro islands
