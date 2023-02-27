@@ -74,25 +74,38 @@ namespace KOI
         {
             float[,] terrainMap = new float[TileSizeX, TileSizeY];
             float[,] treeMap = new float[TileSizeX, TileSizeY];
-            // float[,] aMap = new float[TileSizeX, TileSizeY];
 
             Vector2 Org = new Vector2(Mathf.Sqrt(Seed), Mathf.Sqrt(Seed));
-
+            Vector2 center = new Vector2(TileSizeX / 2, TileSizeY / 2);
+            Vector2 target = center;
+            Vector2 nearCenterPoint = new Vector2(center.x - 40, center.y + 40);
             for (int x = 0, i = 0; x < TileSizeX; x++)
             {
                 TileGrid.Add(new List<GameObject>());
                 for (int y = 0; y < TileSizeY; y++, i++)
                 {
                     float a = Noisefunction(x, y, Org);
-                    a = (a * 0.8f) - gradientMap[x, y]; // 0.9 => 0.72 - 1 = -0.29
-                    // aMap[x, y] = a;
-                    // a = (a + (1-distanceSquared(x, y)));
-                    // int tileId = 0;
-                    // if(distanceSquared(x, y) > 0)
-                    // if(gradientMap[x, y] < 0.5)
-                    // {
-                    // Debug.Log(x + " " + y + " " + distanceSquared(x, y));
-                    // }
+                    a = (a * 0.8f) - gradientMap[x, y];
+                    //a = (a * 0.8f);
+                    target = new Vector2(x, y);
+                    //if (a < 0.1 && Vector2.Distance(center, target) < UnityEngine.Random.Range(30, 80))
+                    //{
+                    //    a = 0.2f;
+                    //}
+                    //if (a > 0.1 && Vector2.Distance(nearCenterPoint, target) < UnityEngine.Random.Range(30, 50))
+                    //{
+                    //    a = 0;
+                    //}
+
+                    //if (Vector2.Distance(center, target) == 0)
+                    //{
+                    //    a = 4;
+                    //}
+                    //if (Vector2.Distance(nearCenterPoint, target) == 0)
+                    //{
+                    //    a = 4;
+                    //}
+
                     int tileId = GetTileIDFromNoise(a);
                     int treeId = GetRandomTree(tileId);
                     treeMap[x, y] = treeId;
@@ -101,11 +114,82 @@ namespace KOI
                     CreateTreeTile(treeId, x, y);
                 }
             }
-            
+
+            int rand1 = 30;
+            int rand2 = UnityEngine.Random.Range(30, 80);
+            for (int k = 10; k < 510; k++)
+            {
+                int ycoord = (int)(0 + Math.Sqrt(Math.Pow(250, 2) - Math.Pow((k - 260), 2)));
+                int ycoord1 = (int)(ycoord + Noisefunction(k, ycoord, Org) * rand1);
+                int ycoord2 = (int)(ycoord + Noisefunction(k, ycoord, Org) * rand2);
+                print("circle: " +k + " " + ycoord);
+                CreateTile(4, k, ycoord1);
+                CreateTile(4, k, -ycoord2);
+            }
+
+            //for (int x = 1, i = 0; x < TileSizeX - 1; x++)
+            //{
+            //    for (int y = 1; y < TileSizeY - 1; y++, i++)
+            //    {
+            //        target = new Vector2(x, y);
+            //        int neighbour1 = terrainMap[x - 1, y] == 0 ? 0 : 1;
+            //        int neighbour3 = terrainMap[x + 1, y - 1] == 0 ? 0 : 1;
+            //        int neighbour4 = terrainMap[x - 1, y] == 0 ? 0 : 1;
+            //        int neighbour5 = terrainMap[x - 1, y + 1] == 0 ? 0 : 1;
+            //        int neighbour2 = terrainMap[x + 1, y + 1] == 0 ? 0 : 1;
+            //        int neighbour6 = terrainMap[x - 1, y - 1] == 0 ? 0 : 1;
+            //        int neighbour7 = terrainMap[x, y + 1] == 0 ? 0 : 1;
+            //        int neighbour8 = terrainMap[x, y - 1] == 0 ? 0 : 1;
+            //        int sumNeighbours = neighbour1 + neighbour2 + neighbour3 + neighbour4 + neighbour5 + neighbour6 + neighbour7 + neighbour8;
+
+            //        if (terrainMap[x, y] == 0 && sumNeighbours > 6)
+            //        {
+            //            terrainMap[x, y] = 1;
+            //        }
+            //        if (terrainMap[x, y] > 0 && sumNeighbours < 3)
+            //        {
+            //            terrainMap[x, y] = 0;
+            //        }
+            //        CreateTile((int)terrainMap[x, y], x, y);
+            //        CreateTreeTile(GetRandomTree((int)terrainMap[x, y]), x, y);
+            //    }
+            //}
+
+            //Vector2 center = new Vector2(TileSizeX / 2, TileSizeY / 2);
+
+            //Vector2 exploredTile = new Vector2(0,0);
+            //for (int x = 0, i = 0; x < TileSizeX; x++)
+            //{
+            //    for (int y = 0; y < TileSizeY; y++, i++)
+            //    {
+            //        Vector2 targetTile = new Vector2(x, y);
+            //        if (Vector2.Distance(center, targetTile) > 10 && terrainMap[(int)targetTile.x, (int)targetTile.y] > 0.1)
+            //        {
+            //            Vector2 direction = (center - targetTile).normalized;
+            //            bool settled = false;
+            //            int k = 1;
+            //            while (!settled)
+            //            {
+            //                k++;
+            //                exploredTile = targetTile + direction * k;
+            //                settled = terrainMap[(int)exploredTile.x, (int)exploredTile.y] > 0.1 || Vector2.Distance(center, exploredTile) < 5;
+            //            }
+            //            k--;
+            //            exploredTile = targetTile + direction * k;
+            //            terrainMap[(int)exploredTile.x, (int)exploredTile.y] = terrainMap[(int)targetTile.x, (int)targetTile.y];
+            //            terrainMap[x, y] = 0;
+            //            CreateTile(0, x, y);
+            //            CreateTile((int)terrainMap[(int)exploredTile.x, (int)exploredTile.y], (int)exploredTile.x, (int)exploredTile.y);
+            //        }
+            //    }45918884
+            //}
+
+
             // print("Map: ");
             // MapLogger(aMap);
             // MapLogger(terrainMap);
         }
+
 
         private float Noisefunction(float x, float y, Vector2 Origin)
         {
@@ -146,30 +230,57 @@ namespace KOI
             // float scaledNoise = noiseValue * TileCount;
             // int id = Mathf.FloorToInt(scaledNoise);
             int id = 0;
-            if(noiseValue < 0.1)
+            //if(noiseValue < 0.1)
+            //{
+            //    id = 0; // water
+            //}
+            //else if (noiseValue > 0.1 && noiseValue < 0.3)
+            //{
+            //    id = 1; // sand
+            //}
+            //else if (noiseValue > 0.3 && noiseValue < 0.5)
+            //{
+            //    id = 2; // grassland
+            //}
+            //else if (noiseValue > 0.5 && noiseValue < 0.8)
+            //{
+            //    id = 3; // mountain
+            //}
+            //else if (noiseValue > 0.8)
+            //{
+            //    id = 4; // ice
+            //}
+
+
+            ////////////////////////////////////////
+            ///
+
+            if (noiseValue < -0.2)
             {
-                id = 0;
+                id = 0; // water
             }
-            else if(noiseValue > 0.1 && noiseValue < 0.3)
+            else if (noiseValue > -0.2 && noiseValue < -0.1)
             {
-                id = 1;
+                id = 1; // sand
             }
-            else if(noiseValue > 0.3 && noiseValue < 0.5)
+            else if (noiseValue > -0.1 && noiseValue < 0.1)
             {
-                id = 2;
+                id = 2; // grassland
             }
-            else if(noiseValue > 0.5 && noiseValue < 0.8)
+            else if (noiseValue > 0.1 && noiseValue < 0.4)
             {
-                id = 3;
+                id = 3; // mountain
             }
-            else if(noiseValue > 0.8)
+            else if (noiseValue > 0.4)
             {
-                id = 4;
+                id = 4; // ice
             }
             return id;
         }
 
-        private void CreateTile(int tileId, int x, int y)
+       
+
+private void CreateTile(int tileId, int x, int y)
         {
             Tile tilePrefab = tileset[tileId];
             Vector3Int localPosition = new Vector3Int(x * TileSize, y * TileSize, 0);
