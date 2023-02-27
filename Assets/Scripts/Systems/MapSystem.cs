@@ -21,6 +21,7 @@ namespace KOI
         {   
             // Add logic here to select between different Map Generators
             _worldGenerator = new StandardMapGenerator();
+            _worldGenerator = new CentralLargeIslandMapGenerator();
         }
 
         private void GenerateWorlMap()
@@ -37,7 +38,10 @@ namespace KOI
 
 		public Cell GetCell(int id)
 		{
-			if (id >= _worldMap.Area) return null;
+			if (id >= _worldMap.Area) {
+				Debug.Log("here2: " + id + " " + _worldMap.Area);
+				return null;
+			}
 
 			return _worldMap.Cells[id];
 		}
@@ -45,7 +49,7 @@ namespace KOI
 		public Cell GetCell(int x, int y)
 		{
 			int cellId = PositionToId(new int2(x, y));
-            // Debug.Log(x +" " + y + " " + cellId);
+            Debug.Log("here1: " + x +" " + y + " " + cellId);
 			return GetCell(cellId);
 		}
 
@@ -69,6 +73,14 @@ namespace KOI
 			{
 				Cell cell = GetCell(x, y);
 				// Utils.DumpToConsole(cell);
+				if(cell == null){
+					Debug.Log("mydebug1: "  + x + " " + y);
+					return true;
+				}
+				if(cell.Occupied == null){
+					Debug.Log("mydebug2: ");
+					return true;
+				}
 				return cell.Occupied;
 			}
 			else
