@@ -119,8 +119,8 @@ namespace KOI
             {
                 for (int y = 0; y < MapConfig.WorldMapHeight; y++)
                 {
-                    float radius = 3.0f;
-                    float slope = 0.0003f;
+                    float radius = MapConfig.radius;
+                    float slope = MapConfig.slope;
                     Vector2 current = new Vector2(x,y);
                     Vector2 center = new Vector2(halfWidth, halfHeight);
                     float distance = Vector2.Distance(current, center);
