@@ -135,9 +135,6 @@ namespace KOI
                     if(distance - radius > 0){
                         gradient = slope * Mathf.Pow(distance - radius, 2);
                     }
-                    else{
-                        gradient = 0;
-                    }
                     _gradientMap[x, y] = gradient;
                 }
             }
