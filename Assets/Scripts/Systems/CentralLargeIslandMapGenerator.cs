@@ -27,7 +27,7 @@ namespace KOI
                     // get original noise map
                     float a = Noisefunction(x, y, Org);
                     // clear out the edges to get a central island
-                    a = (a * 0.8f) - _gradientMap[x, y]; // 0.9 => 0.72 - 1 = -0.29
+                    a = (a * 0.8f) - _gradientMap[x, y];
                     // identify tiles
                     TerrainType terrainEnum = GetTerrainTypeFromNoise(a);
                     VegetationType treeEnum = GetTreeTypeFromTerrain(terrainEnum);
@@ -61,14 +61,11 @@ namespace KOI
                 float xVal = (x / (noisesize * MapConfig.WorldMapWidth)) + Origin.x;
                 float yVal = (y / (noisesize * MapConfig.WorldMapHeight)) - Origin.y;
                 float z = noise.snoise(new float2(xVal, yVal));
-                // float z = noise.pnoise(new float2(xVal, yVal), 0);
                 a += Mathf.InverseLerp(0, 1, z) / opacity;
                 noisesize /= 2f;
                 opacity *= 2f;
             }
-            // a -= gradientMap[(int)x, (int)y];
             return a;
-            // return a -= FallOffMap(x, y, MapConfig.WorldMapWidth, MapConfig.WorldMapHeight, IslandSize);
         }
 
         private VegetationType GetTreeTypeFromTerrain(TerrainType terrainType)
@@ -122,10 +119,6 @@ namespace KOI
             {
                 for (int y = 0; y < MapConfig.WorldMapHeight; y++)
                 {
-                    // float xValue = Math.Abs(x * 2f - MapConfig.WorldMapWidth) / MapConfig.WorldMapWidth;
-                    // float yValue = Math.Abs(y * 2f - MapConfig.WorldMapHeight) / MapConfig.WorldMapHeight;
-                    // float gradient = Math.Max(xValue, yValue);
-                    // _gradientMap[x, y] = gradient;
                     float radius = 3.0f;
                     float slope = 0.0003f;
                     Vector2 current = new Vector2(x,y);
