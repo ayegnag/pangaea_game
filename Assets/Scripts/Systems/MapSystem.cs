@@ -74,19 +74,12 @@ namespace KOI
 				Cell cell = GetCell(x, y);
 				// Utils.DumpToConsole(cell);
 				if(cell == null){
-					Debug.Log("mydebug1: "  + x + " " + y);
-					return true;
-				}
-				if(cell.Occupied == null){
-					Debug.Log("mydebug2: ");
+					Debug.Log("mydebug: "  + x + " " + y);
 					return true;
 				}
 				return cell.Occupied;
 			}
-			else
-			{
-				return true;
-			}
+			return true;
 		}
 
 		public bool IsOccupied(int2 position)
