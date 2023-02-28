@@ -28,7 +28,7 @@ namespace KOI
                     float a = Noisefunction(x, y, Org, MapConfig.NoiseScale);
                     // clear out the edges to get a central island
                     a = (a * 0.8f) - _gradientMap[x, y];
-                    // if(a > - 0.1){ // this if clause is required for 2nd mask
+                    // if(a > - 0.2){ // this if clause is required for 2nd mask
                     //     a = Noisefunction(x, y, Org, 0.3f) * 0.8f; // this is required for 2nd mask
                     // }
                     // identify tiles
@@ -122,8 +122,8 @@ namespace KOI
             {
                 for (int y = 0; y < MapConfig.WorldMapHeight; y++)
                 {
-                    float radius = MapConfig.radius;
-                    float slope = MapConfig.slope;
+                    float radius = MapConfig.Radius;
+                    float slope = MapConfig.Slope;
                     Vector2 current = new Vector2(x,y);
                     Vector2 center = new Vector2(halfWidth, halfHeight);
                     float distance = Vector2.Distance(current, center);
