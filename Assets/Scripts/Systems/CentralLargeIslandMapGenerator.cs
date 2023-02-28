@@ -26,11 +26,10 @@ namespace KOI
                 {
                     // get original noise map
                     float a = Noisefunction(x, y, Org, MapConfig.NoiseScale);
-                    // float originalA = Noisefunction(x, y, Org, 0.3f) * 0.8f; // this is required for 2nd mask
                     // clear out the edges to get a central island
                     a = (a * 0.8f) - _gradientMap[x, y];
                     // if(a > - 0.1){ // this if clause is required for 2nd mask
-                    //     a = originalA;
+                    //     a = Noisefunction(x, y, Org, 0.3f) * 0.8f; // this is required for 2nd mask
                     // }
                     // identify tiles
                     TerrainType terrainEnum = GetTerrainTypeFromNoise(a);
@@ -55,7 +54,7 @@ namespace KOI
             return terrain == TerrainType.Water || tree != VegetationType.None ? true : false;
         }
 
-        private float Noisefunction(float x, float y, Vector2 Origin, float scale)
+        private float Noisefunction(float x, float y, Vector2 Origin, float scale) // scale argument added for 2nd mask
         {
 
             float a = 0, noisesize = scale, opacity = 1;
