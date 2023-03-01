@@ -25,10 +25,12 @@ namespace KOI
                 for (int y = 0; y < MapConfig.WorldMapHeight; y++)
                 {
                     // get original noise map
-                    // float a = Noisefunction(x, y, Org, MapConfig.NoiseScale);
+                    float a = Noisefunction(x, y, Org, MapConfig.NoiseScale);
                     // clear out the edges to get a central island
-                    // a = (a * 0.8f) - _gradientMap[x, y];
-                        float a = _gradientMap[x, y];
+                    a = (a * 0.8f) - _gradientMap[x, y];
+
+                    // float a = _gradientMap[x, y];   // Generate gradient mask only
+
                     // if(a > - 0.2){ // this if clause is required for 2nd mask
                     //     a = Noisefunction(x, y, Org, 0.3f) * 0.8f; // this is required for 2nd mask
                     // }
