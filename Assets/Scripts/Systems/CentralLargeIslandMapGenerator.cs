@@ -11,7 +11,7 @@ namespace KOI
 
         public void Initialize(WorldMap worldMap)
         {
-            GenerateRectangularGradient();
+            GenerateCircularGradient();
             _worldMap = worldMap;
         }
 
@@ -25,9 +25,10 @@ namespace KOI
                 for (int y = 0; y < MapConfig.WorldMapHeight; y++)
                 {
                     // get original noise map
-                    float a = Noisefunction(x, y, Org, MapConfig.NoiseScale);
+                    // float a = Noisefunction(x, y, Org, MapConfig.NoiseScale);
                     // clear out the edges to get a central island
-                    a = (a * 0.8f) - _gradientMap[x, y];
+                    // a = (a * 0.8f) - _gradientMap[x, y];
+                        float a = _gradientMap[x, y];
                     // if(a > - 0.2){ // this if clause is required for 2nd mask
                     //     a = Noisefunction(x, y, Org, 0.3f) * 0.8f; // this is required for 2nd mask
                     // }
@@ -112,7 +113,7 @@ namespace KOI
             return type;
         }
         
-        void GenerateRectangularGradient()
+        void GenerateCircularGradient()
         {
             int halfWidth = MapConfig.WorldMapWidth / 2;
             int halfHeight = MapConfig.WorldMapHeight / 2;
@@ -127,7 +128,7 @@ namespace KOI
                     Vector2 current = new Vector2(x,y);
                     Vector2 center = new Vector2(halfWidth, halfHeight);
                     float distance = Vector2.Distance(current, center);
-                    float gradient = 0.0f;
+                    float gradient = 0.2f;
                     // if(distance - radius > 0){
                         gradient = slope * Mathf.Pow(distance - radius, 2);
                     // }

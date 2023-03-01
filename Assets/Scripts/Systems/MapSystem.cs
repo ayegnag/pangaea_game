@@ -20,7 +20,7 @@ namespace KOI
         private void SelectMapType()
         {   
             // Add logic here to select between different Map Generators
-            _worldGenerator = new StandardMapGenerator();
+            // _worldGenerator = new StandardMapGenerator();
             _worldGenerator = new CentralLargeIslandMapGenerator();
         }
 
@@ -39,7 +39,7 @@ namespace KOI
 		public Cell GetCell(int id)
 		{
 			if (id >= _worldMap.Area) {
-				Debug.Log("here2: " + id + " " + _worldMap.Area);
+				// Debug.Log("here2: " + id + " " + _worldMap.Area);
 				return null;
 			}
 
@@ -49,7 +49,7 @@ namespace KOI
 		public Cell GetCell(int x, int y)
 		{
 			int cellId = PositionToId(new int2(x, y));
-            Debug.Log("here1: " + x +" " + y + " " + cellId);
+            // Debug.Log("here1: " + x +" " + y + " " + cellId);
 			return GetCell(cellId);
 		}
 
@@ -74,7 +74,7 @@ namespace KOI
 				Cell cell = GetCell(x, y);
 				// Utils.DumpToConsole(cell);
 				if(cell == null){
-					Debug.Log("mydebug: "  + x + " " + y);
+					// Debug.Log("mydebug: "  + x + " " + y);
 					return true;
 				}
 				return cell.Occupied;
@@ -161,7 +161,7 @@ namespace KOI
             // Debug.Log(eventArgs.Tick);
         }
 
-        public override void Quit()
+        public override void  Quit()
         {
             GameStateManager.OnTick -= Tick;
         }

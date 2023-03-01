@@ -14,8 +14,8 @@ namespace KOI
 		public static float NoiseScale = 0.8f;
         public static int NoiseOctaves = 8; // 1 to 10
 
-		public static float Radius = 3.0f;
-		public static float Slope = 0.0003f;
+		public static float Radius = 60.0f;
+		public static float Slope = 0.0001f;
 
         public static int ChanceGroundTree = 6; // 1 to 10; 6 = 40% chance
         public static int ChanceBeachTree = 8; // 1 to 10; 8 = 20% chance

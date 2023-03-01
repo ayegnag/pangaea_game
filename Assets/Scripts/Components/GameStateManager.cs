@@ -52,8 +52,8 @@ namespace KOI
         }
 
         private void OnDisable() {
-            MapSystem.Quit();
-            EntitySystem.Quit();
+            MapSystem?.Quit();
+            EntitySystem?.Quit();
         }
     }
 }
