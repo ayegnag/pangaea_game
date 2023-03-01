@@ -47,3 +47,9 @@ namespace KOI
 }
 
 // 454530 -  4 Islands
+
+// For larger map and larger island:
+// WorldMapWidth = 800;
+// WorldMapHeight = 600;
+// Radius = 100.0f;
+// Slope = 0.00003f;
