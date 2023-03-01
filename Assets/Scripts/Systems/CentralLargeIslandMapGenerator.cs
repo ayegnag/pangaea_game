@@ -25,9 +25,12 @@ namespace KOI
                 for (int y = 0; y < MapConfig.WorldMapHeight; y++)
                 {
                     // get original noise map
-                    float a = Noisefunction(x, y, Org);
+                    float a = Noisefunction(x, y, Org, MapConfig.NoiseScale);
                     // clear out the edges to get a central island
                     a = (a * 0.8f) - _gradientMap[x, y];
+                    // if(a > - 0.2){ // this if clause is required for 2nd mask
+                    //     a = Noisefunction(x, y, Org, 0.3f) * 0.8f; // this is required for 2nd mask
+                    // }
                     // identify tiles
                     TerrainType terrainEnum = GetTerrainTypeFromNoise(a);
                     VegetationType treeEnum = GetTreeTypeFromTerrain(terrainEnum);
@@ -51,10 +54,10 @@ namespace KOI
             return terrain == TerrainType.Water || tree != VegetationType.None ? true : false;
         }
 
-        private float Noisefunction(float x, float y, Vector2 Origin)
+        private float Noisefunction(float x, float y, Vector2 Origin, float scale) // scale argument added for 2nd mask
         {
 
-            float a = 0, noisesize = MapConfig.NoiseScale, opacity = 1;
+            float a = 0, noisesize = scale, opacity = 1;
 
             for (int octaves = 0; octaves < MapConfig.NoiseOctaves; octaves++)
             {
@@ -94,15 +97,15 @@ namespace KOI
             {
                 type = TerrainType.Sand;
             }
-            else if(noiseValue > -0.1 && noiseValue < 0.1)
+            else if(noiseValue > -0.1 && noiseValue < 0.3)
             {
                 type = TerrainType.Ground;
             }
-            else if(noiseValue > 0.1 && noiseValue < 0.4)
+            else if(noiseValue > 0.3 && noiseValue < 0.5)
             {
                 type = TerrainType.Mountain;
             }
-            else if(noiseValue > 0.4)
+            else if(noiseValue > 0.5)
             {
                 type = TerrainType.Ice;
             }
@@ -119,15 +122,15 @@ namespace KOI
             {
                 for (int y = 0; y < MapConfig.WorldMapHeight; y++)
                 {
-                    float radius = MapConfig.radius;
-                    float slope = MapConfig.slope;
+                    float radius = MapConfig.Radius;
+                    float slope = MapConfig.Slope;
                     Vector2 current = new Vector2(x,y);
                     Vector2 center = new Vector2(halfWidth, halfHeight);
                     float distance = Vector2.Distance(current, center);
                     float gradient = 0.0f;
-                    if(distance - radius > 0){
+                    // if(distance - radius > 0){
                         gradient = slope * Mathf.Pow(distance - radius, 2);
-                    }
+                    // }
                     _gradientMap[x, y] = gradient;
                 }
             }
@@ -136,7 +139,7 @@ namespace KOI
 }
 
 // Notes:
-// 1. Higher noiseScale leads to more land feature fragmentation
+// 1. Higher noiseScale leads to lesser land feature fragmentation
 // 2. Higher octaves lead to more jaggedness
 // 3. Higher radius leads to larger island
 // 4. Higher slope leads to a lesser micro islands
