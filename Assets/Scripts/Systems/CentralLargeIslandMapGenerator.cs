@@ -128,9 +128,9 @@ namespace KOI
                     Vector2 center = new Vector2(halfWidth, halfHeight);
                     float distance = Vector2.Distance(current, center);
                     float gradient = 0.0f;
-                    // if(distance - radius > 0){
+                    if(distance - radius > 0){
                         gradient = slope * Mathf.Pow(distance - radius, 2);
-                    // }
+                    }
                     _gradientMap[x, y] = gradient;
                 }
             }
