@@ -53,8 +53,8 @@ public class CameraMovement : MonoBehaviour
             bounds = TerrainTilemap.cellBounds;
             bottomLeftLimit = TerrainTilemap.CellToWorld(new Vector3Int(bounds.xMin, bounds.yMin, 0));
             topRightLimit = TerrainTilemap.CellToWorld(new Vector3Int(bounds.xMax, bounds.yMax, 0));
-            Debug.Log(bounds);
-            Debug.Log(bottomLeftLimit + " " + topRightLimit);
+            // Debug.Log(bounds);
+            // Debug.Log(bottomLeftLimit + " " + topRightLimit);
             transform.position = new Vector3(topRightLimit.x/2, topRightLimit.y/2, -1);
             initialized = true;
         }

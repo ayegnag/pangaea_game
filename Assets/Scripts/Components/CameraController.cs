@@ -1,14 +1,16 @@
+using KOI;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class CameraController : MonoBehaviour
 {
-    public float cameraSpeed = 5f;
-    public float edgeSensitivity = 10f;
-    public float zoomSpeed = 4f;
-    public float minZoom = 15f;
-    public float maxZoom = 30f;
     public Tilemap TerrainTilemap;
+
+    private float cameraSpeed = GameConfig.CameraSpeed;
+    private float edgeSensitivity = GameConfig.EdgeSensitivity;
+    private float zoomSpeed = GameConfig.ZoomSpeed;
+    private float minZoom = GameConfig.MinZoom;
+    private float maxZoom = GameConfig.MaxZoom;
 
     private Vector3 moveDirection;
     private float currentZoom;
@@ -68,7 +70,7 @@ public class CameraController : MonoBehaviour
         float cameraHeight = camera.orthographicSize;
 
         moveDirection = GetSafeNormalization(moveDirection);
-        Vector3 newPos = transform.position + moveDirection * cameraSpeed * Time.deltaTime;
+        Vector3 newPos = transform.position + moveDirection * cameraSpeed * Time.deltaTime * (0.2f) * currentZoom;
         newPos.x = Mathf.Clamp(newPos.x, bottomLeftLimit.x + cameraWidth, topRightLimit.x - cameraWidth);
         newPos.y = Mathf.Clamp(newPos.y, bottomLeftLimit.y + cameraHeight, topRightLimit.y - cameraHeight);
         transform.position = newPos;

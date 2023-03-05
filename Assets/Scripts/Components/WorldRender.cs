@@ -20,7 +20,7 @@ namespace KOI
         private Tilemap _terrainTileMap;
         private Tilemap _treesTileMap;
 
-        private Dictionary<TerrainType, Tile> _terrainTiles;
+        private Dictionary<TerrainType, TileBase> _terrainTiles;
         private Dictionary<VegetationType, Tile> _treeTiles;
 
         private GameObject _dogsGameObject;
@@ -35,12 +35,12 @@ namespace KOI
 			_terrainTileMap = GameObject.Find("TerrainTilemap").GetComponent<Tilemap>();
 			_treesTileMap = GameObject.Find("TreesTilemap").GetComponent<Tilemap>();
 
-            _terrainTiles = new Dictionary<TerrainType, Tile>
+            _terrainTiles = new Dictionary<TerrainType, TileBase>
 			{
-				[TerrainType.Water] = Resources.Load<Tile>("Tiles/Water"),
-				[TerrainType.Sand] = Resources.Load<Tile>("Tiles/Sand"),
+				[TerrainType.Water] = Resources.Load<RuleTile>("Tiles/Water Rule Tile"),
+				[TerrainType.Sand] = Resources.Load<RuleTile>("Tiles/Sand Rule Tile"),
 				[TerrainType.Ground] = Resources.Load<Tile>("Tiles/Grass"),
-				[TerrainType.Mountain] = Resources.Load<Tile>("Tiles/Stone"),
+				[TerrainType.Mountain] = Resources.Load<RuleTile>("Tiles/Dirt Rule Tile"),
 				[TerrainType.Ice] = Resources.Load<Tile>("Tiles/Ice"),
 				[TerrainType.Test] = Resources.Load<Tile>("Tiles/Test")
 			};
