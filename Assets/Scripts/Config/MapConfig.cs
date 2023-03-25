@@ -8,7 +8,7 @@ namespace KOI
         public static int WorldMapWidth = 400;
         public static int WorldMapHeight = 300;
         
-        public static int Seed = 5677999;   // 0 to 100000000
+        public static int Seed = 9677999;   // 0 to 100000000
         // public static int Seed = 46419636;   // 0 to 100000000
         // public static float NoiseScale = 0.3f; // 0.8f gives realistically smoothest coastline but in-land heights were too uniform.
 		public static float NoiseScale = 0.8f;

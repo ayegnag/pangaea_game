@@ -28,6 +28,8 @@ namespace KOI
         private Dictionary<int, DogRenderData> _dogRenderData;
 		private Dictionary<Pack, GameObject> _packPrefabs;
 
+		// public static event EventHandler<OnDogMouseEventArgs> OnUpdateDisplayPanel;
+
 		private void SetupTilemapResources()
 		{
 			_grid = GameObject.Find("TerrainGrid").GetComponent<Grid>();
@@ -39,7 +41,7 @@ namespace KOI
 			{
 				[TerrainType.Water] = Resources.Load<RuleTile>("Tiles/Water Rule Tile"),
 				[TerrainType.Sand] = Resources.Load<RuleTile>("Tiles/Sand Rule Tile"),
-				[TerrainType.Ground] = Resources.Load<Tile>("Tiles/Grass"),
+				[TerrainType.Ground] = Resources.Load<WeightedRandomTile>("Tiles/Grass Variation Tile"),
 				[TerrainType.Mountain] = Resources.Load<RuleTile>("Tiles/Dirt Rule Tile"),
 				[TerrainType.Ice] = Resources.Load<Tile>("Tiles/Ice"),
 				[TerrainType.Test] = Resources.Load<Tile>("Tiles/Test")
@@ -57,6 +59,8 @@ namespace KOI
 		{
             _dogsGameObject = GameObject.Find("World/Entities/Dogs");
 			_dogRenderData = new Dictionary<int, DogRenderData>();
+
+			// [TODO:] See if this can be used to generate other entities as well
             _packPrefabs = new Dictionary<Pack, GameObject>
 			{
 				[Pack.Pack1] = Resources.Load<GameObject>("Prefabs/Entities/Dogs/Doggie"),
@@ -64,7 +68,8 @@ namespace KOI
 			};
         }
 
-        private void Awake() {
+        private void Awake()
+		{
             SetupEvents();
             SetupTilemapResources();
             SetupDogResources();
@@ -79,6 +84,15 @@ namespace KOI
 			Dog.OnUpdateDogRenderPosition += UpdateDogRenderPosition;
         }
 
+        // private void GetHoveredEntity(object sender, OnHoverEntityArgs entity)
+        // {
+        //     if(entity.Type == "dog") {
+		// 		DogRenderData dog = _dogRenderData[entity.Id];
+		// 		DogAttributes dogAttributes = dog.WorldGameObject.Attribute;
+		// 		OnUpdateDisplayPanel?.Invoke(this, new OnDogMouseEventArgs { attribute =  });
+		// 	}
+        // }
+
         private void CreateDogRenderData(object sender, OnDogEventArgs eventArgs)
         {
 			Dog dog = eventArgs.Dog;
@@ -92,7 +106,15 @@ namespace KOI
 				Quaternion.identity,
 				_dogsGameObject.transform
 			);
-			dogRenderData.WorldGameObject.name = "Dog" + dog.Pack + dog.Id;
+			// dogRenderData.WorldGameObject.name = Utils.GenerateRandomName() + "_" + dog.Pack + dog.Id;
+			dogRenderData.WorldGameObject.name = "dog_" + dog.Id;
+			dogRenderData.WorldGameObject.AddComponent(typeof(BoxCollider2D));
+			dogRenderData.WorldGameObject.GetComponent<BoxCollider2D>().isTrigger = true;
+
+			// Attach Player Interaction Events Script to the Prefabs without making the Entities inherit Mono.
+			dogRenderData.WorldGameObject.AddComponent(typeof(KOI.EntityInteraction));
+
+			// dogRenderData.WorldGameObject.name = "Dog" + dog.Pack + dog.Id;
 
 			// dogRenderData.Animator = dogRenderData.WorldGameObject.GetComponent<Animator>();
             // Debug.Log(dog.Id);
@@ -104,7 +126,8 @@ namespace KOI
             
         }
 
-        private void OnDisable() {
+        private void OnDisable()
+		{
             MapSystem.OnUpdateMapRender -= UpdateMapRender;
 			EntitySystem.OnCreateDog -= CreateDogRenderData;
 			
@@ -181,6 +204,11 @@ namespace KOI
 
 			// dogRenderData.Animator.Play($"Base Layer.{ dog.Pack }-{animationType}-{dog.Direction}");
 		}
+
+		// private void OnMouseEnter() {
+		// 	object identity = GetEntityTypeIdFromName(name);
+		// 	OnUpdateDisplayPanel?.Invoke(this, new OnDogEventArgs { Dog = this });
+		// }
 
         
     }

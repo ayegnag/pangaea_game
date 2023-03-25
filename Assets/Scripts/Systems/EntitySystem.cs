@@ -20,7 +20,6 @@ namespace KOI
 		private void SetupEvents()
 		{
 			GameStateManager.OnTick += Tick;
-
 			// Interface.OnUpdateMovementState += UpdateMovementState;
 		}
 
@@ -43,6 +42,7 @@ namespace KOI
 			}
 		}
 
+		// EntitySytem Receives Tick Event from the GameStageManager and passes that tick event call to all Dogs in the list.
 		protected override void Tick(object sender, OnTickArgs eventArgs)
 		{
 			foreach (Dog dog in _dogList)
@@ -64,6 +64,13 @@ namespace KOI
 			{
 				dog.SetMovementState(eventArgs.DogMovementStateType);
 			}
+		}
+
+		public DogAttributes GetDogAttributes(int dogId)
+		{
+			// Debug.Log($"[{string.Join(",", _dogList)}]");
+			int num = dogId - 1;
+			return _dogList[num].Attributes;
 		}
 	}
 }
