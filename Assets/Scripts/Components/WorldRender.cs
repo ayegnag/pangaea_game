@@ -64,6 +64,20 @@ namespace KOI
 			};
         }
 
+		// public static void TestTiler(){
+        //     if(Input.GetMouseButtonDown(0)){
+		// 		Vector3 currentPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //         int xPosition = (int)Mathf.Floor(currentPoint.x);
+        //         int yPosition = (int)Mathf.Floor(currentPoint.y);
+        //         Cell currentCell =  MapSystem.GetCell(xPosition, yPosition);
+        //         if(currentCell != null){
+        //             Vector3Int tilemapPosition = new Vector3Int(xPosition, yPosition);
+        //             _terrainTileMap.SetTile(tilemapPosition, _terrainTiles[TerrainType.Test]);
+        //             Debug.Log("Tiled!");
+		// 		}
+        //     }
+        // }
+
         private void Awake() {
             SetupEvents();
             SetupTilemapResources();

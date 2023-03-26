@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using Unity.Mathematics;
 
 namespace KOI
 {
-	public class Dog
+	public class Dog: MonoBehaviour
 	{
 		private static int _nextDogId = 1;
 
@@ -29,12 +30,13 @@ namespace KOI
 			Id = _nextDogId++;
 
 			Cooldown = Utils.RandomRange(2, 8);
-
 			Attributes = new DogAttributes
 			{
 				Health = 1,
 				Strength = 1,
 				Speed = 1,
+				Awareness = 5,
+				DirectionsToAvoid = new Vector2[]{new Vector2(0,1),new Vector2(1,0)}
 			};
 
 			_movementStates = new Dictionary<DogMovementStateType, DogMovementState>

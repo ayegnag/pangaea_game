@@ -1,6 +1,8 @@
 using System;
 using Unity.Mathematics;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace KOI
 {
@@ -49,7 +51,6 @@ namespace KOI
 		public Cell GetCell(int x, int y)
 		{
 			int cellId = PositionToId(new int2(x, y));
-            Debug.Log("here1: " + x +" " + y + " " + cellId);
 			return GetCell(cellId);
 		}
 
@@ -141,6 +142,58 @@ namespace KOI
 			}
 
 			return false;
+		}
+
+		public List<Direction> LocatePredators(int2 startPosition, float awarenessRadius){
+			List<Direction> predatorDirections = new List<Direction>();
+			Array directionsArray = Enum.GetValues(typeof(Direction));
+			for(int i = 0; i < directionsArray.Length; i++){
+				for(int j = 0; j < awarenessRadius; j++){
+					Direction direction = (Direction)directionsArray.GetValue(i);
+					int2 endPosition = startPosition + (j + 1) * MapConfig.DirectionVectors[direction];
+					int x = endPosition.x;				
+					int y = endPosition.y;				
+					Cell cell = GetCell(x, y);
+					Debug.Log("searching for predator " + cell.TerrainType);
+					if(cell.TerrainType == TerrainType.Test){ // change this to condition checking for actual predator
+						predatorDirections.Add(direction); 
+						Debug.Log("predator found");
+					}
+				}
+			}
+			return predatorDirections;
+		}
+
+		public List<Direction> DetermineEscapeDirections(int2 startPosition, float awarenessRadius){
+			List<Direction> predatorDirections = LocatePredators(startPosition, awarenessRadius);
+			List<Direction> directions = (Enum.GetValues(typeof(Direction))).Cast<Direction>().ToList();
+		    List<Direction> escapeDirections = directions.Except(predatorDirections).ToList();
+			return escapeDirections;
+		}
+
+		public List<Direction> DetermineFoodDirections(int2 startPosition, float awarenessRadius){
+			List<Direction> foodDirections = new List<Direction>();
+			Array directionsArray = Enum.GetValues(typeof(Direction));
+			for(int i = 0; i < directionsArray.Length; i++){
+				for(int j = 0; j < awarenessRadius; j++){
+					Direction direction = (Direction)directionsArray.GetValue(i);
+					int2 endPosition = startPosition + (j + 1) * MapConfig.DirectionVectors[direction];
+					int x = endPosition.x;				
+					int y = endPosition.y;				
+					Cell cell = GetCell(x, y);
+					Debug.Log("searching for food " + cell.TerrainType);
+					if(cell.TerrainType == TerrainType.Test){ // change this to condition checking for actual food
+						foodDirections.Add(direction); 
+						Debug.Log("food found");
+					}
+				}
+			}
+			return foodDirections;
+		}
+
+		public bool EatingFood(int2 position){
+			Cell cell = GetCell(position.x, position.y);
+			return cell.TerrainType == TerrainType.Test;
 		}
 
         		

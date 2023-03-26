@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace KOI
 {
@@ -10,6 +11,10 @@ namespace KOI
         public static int RandomRange(int minInclusive, int maxInclusive)
         {
             return _RandomInstance.Next(minInclusive, maxInclusive + 1);
+        }
+
+        public static T RandomValueFromList<T>(List<T> list){
+            return (T)list[_RandomInstance.Next(list.Count)];
         }
 
         public static T RandomEnumValue<T>()
