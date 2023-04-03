@@ -19,6 +19,8 @@ namespace KOI
         
         private Tilemap _terrainTileMap;
         private Tilemap _treesTileMap;
+		private Vector3Int terrainTileMapOrigin;
+		private int2 tileMapOrigin;
 
         private Dictionary<TerrainType, TileBase> _terrainTiles;
         private Dictionary<VegetationType, Tile> _treeTiles;
@@ -53,6 +55,9 @@ namespace KOI
 				[VegetationType.BeachTree] = Resources.Load<Tile>("Tiles/Tree_Two"),
 				[VegetationType.PlainTree] = Resources.Load<Tile>("Tiles/Tree_One")
 			};
+
+			terrainTileMapOrigin = _terrainTileMap.origin;	// [Important!] A fix for Tilemap pivot offset issue causing blank gap at edges.
+			tileMapOrigin = new int2(terrainTileMapOrigin.x, terrainTileMapOrigin.y);
         }
 
         private void SetupDogResources()
@@ -139,7 +144,7 @@ namespace KOI
         {
             foreach(Cell cell in eventArgs.WorldMap.Cells)
             {
-                Vector3Int tilemapPosition = new Vector3Int(cell.Position.x, cell.Position.y);
+                Vector3Int tilemapPosition = new Vector3Int(cell.Position.x + terrainTileMapOrigin.x , cell.Position.y + terrainTileMapOrigin.y);
                 _terrainTileMap.SetTile(tilemapPosition, _terrainTiles[cell.TerrainType]);
                 _treesTileMap.SetTile(tilemapPosition, _treeTiles[cell.VegetationType]);
             }
@@ -156,7 +161,7 @@ namespace KOI
 
 		private Vector3 GridToWorld(int2 position)
 		{
-			return GridToWorld(position.x, position.y);
+			return GridToWorld(position.x + terrainTileMapOrigin.x, position.y + terrainTileMapOrigin.y);
 		}
 
 		
@@ -180,7 +185,7 @@ namespace KOI
 			Vector3 startPosition = dogRenderData.WorldGameObject.transform.position;
 
 			Vector3 endPosition = GridToWorld(dog.Position);
-			// endPosition.z = dog.Id * 0.00001f;
+			// endPosition.z = dog.Id * 0.00001f;	// for isometric z sorting
 
 			// PlayAnimation(dog, DogAnimationType.Walk);
 

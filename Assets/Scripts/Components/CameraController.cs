@@ -48,9 +48,9 @@ namespace KOI {
                 topRightLimit = TerrainTilemap.CellToWorld(new Vector3Int(bounds.xMax, bounds.yMax, 0));
                 transform.position = new Vector3((topRightLimit.x + bottomLeftLimit.x)/2, (topRightLimit.y + bottomLeftLimit.y)/2, -1);
                 initialized = true;
-                Utils.DumpToConsole(topRightLimit);
-                Utils.DumpToConsole(bottomLeftLimit);
-                Debug.Log(cameraMain.aspect);
+                // Utils.DumpToConsole(topRightLimit);
+                // Utils.DumpToConsole(bottomLeftLimit);
+                // Debug.Log(cameraMain.aspect);
             }
         }
 
