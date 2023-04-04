@@ -14,7 +14,7 @@ namespace KOI
 		public int Id { get; private set; }
 		public Direction Direction { get; set; }
 		public int2 Position { get; set; }
-		public Pack Pack { get; set; }
+		public EntityType EntityType { get; set; }
 
 		public int Cooldown { get; set; }
 

@@ -13,8 +13,9 @@ namespace KOI
 		public override void Init()
 		{
 			SetupEvents();
-
+			_dogList = new List<Dog>(EntityConfig.TotalEntities);
 			CreateDogs();
+			CreateDeers();
 		}
 
 		private void SetupEvents()
@@ -25,13 +26,27 @@ namespace KOI
 
 		private void CreateDogs()
 		{
-			_dogList = new List<Dog>(EntityConfig.TotalDogs);
-
 			for (int i = 0; i < EntityConfig.TotalDogs; i++)
 			{
 				var newDog = new Dog()
 				{   
-					Pack = Utils.RandomEnumValue<Pack>(),
+					EntityType = EntityType.Dog,	// Segregate this logic into how the entities are chosen
+					Direction = Utils.RandomEnumValue<Direction>(),
+					Position = GameStateManager.Instance.MapSystem.GetOpenCellPosition()
+				};
+
+				_dogList.Add(newDog);
+
+				OnCreateDog?.Invoke(this, new OnDogEventArgs { Dog = newDog });
+			}
+		}
+		private void CreateDeers()
+		{
+			for (int i = 0; i < EntityConfig.TotalDeers; i++)
+			{
+				var newDog = new Dog()
+				{   
+					EntityType = EntityType.Deer,
 					Direction = Utils.RandomEnumValue<Direction>(),
 					Position = GameStateManager.Instance.MapSystem.GetOpenCellPosition()
 				};

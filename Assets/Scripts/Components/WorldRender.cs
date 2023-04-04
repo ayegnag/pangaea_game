@@ -28,7 +28,7 @@ namespace KOI
         private GameObject _dogsGameObject;
 
         private Dictionary<int, DogRenderData> _dogRenderData;
-		private Dictionary<Pack, GameObject> _packPrefabs;
+		private Dictionary<EntityType, GameObject> _packPrefabs;
 
 		// public static event EventHandler<OnDogMouseEventArgs> OnUpdateDisplayPanel;
 
@@ -66,10 +66,10 @@ namespace KOI
 			_dogRenderData = new Dictionary<int, DogRenderData>();
 
 			// [TODO:] See if this can be used to generate other entities as well
-            _packPrefabs = new Dictionary<Pack, GameObject>
+            _packPrefabs = new Dictionary<EntityType, GameObject>
 			{
-				[Pack.Pack1] = Resources.Load<GameObject>("Prefabs/Entities/Dogs/Doggie"),
-				[Pack.Pack2] = Resources.Load<GameObject>("Prefabs/Entities/Dogs/Doggie")
+				[EntityType.Dog] = Resources.Load<GameObject>("Prefabs/Entities/Dogs/Doggie"),
+				[EntityType.Deer] = Resources.Load<GameObject>("Prefabs/Entities/Deers/Deer")
 			};
         }
 
@@ -106,12 +106,12 @@ namespace KOI
 			Vector2 startPosition = GridToWorld(dog.Position);
 
 			dogRenderData.WorldGameObject = Instantiate(
-				_packPrefabs[dog.Pack],
+				_packPrefabs[dog.EntityType],
 				startPosition,
 				Quaternion.identity,
 				_dogsGameObject.transform
 			);
-			// dogRenderData.WorldGameObject.name = Utils.GenerateRandomName() + "_" + dog.Pack + dog.Id;
+			// dogRenderData.WorldGameObject.name = Utils.GenerateRandomName() + "_" + dog.EntityType + dog.Id;
 			dogRenderData.WorldGameObject.name = "dog_" + dog.Id;
 			dogRenderData.WorldGameObject.AddComponent(typeof(BoxCollider2D));
 			dogRenderData.WorldGameObject.GetComponent<BoxCollider2D>().isTrigger = true;
@@ -119,7 +119,7 @@ namespace KOI
 			// Attach Player Interaction Events Script to the Prefabs without making the Entities inherit Mono.
 			dogRenderData.WorldGameObject.AddComponent(typeof(KOI.EntityInteraction));
 
-			// dogRenderData.WorldGameObject.name = "Dog" + dog.Pack + dog.Id;
+			// dogRenderData.WorldGameObject.name = "Dog" + dog.EntityType + dog.Id;
 
 			// dogRenderData.Animator = dogRenderData.WorldGameObject.GetComponent<Animator>();
             // Debug.Log(dog.Id);
@@ -207,7 +207,7 @@ namespace KOI
 		{
 			DogRenderData dogRenderData = _dogRenderData[dog.Id];
 
-			// dogRenderData.Animator.Play($"Base Layer.{ dog.Pack }-{animationType}-{dog.Direction}");
+			// dogRenderData.Animator.Play($"Base Layer.{ dog.EntityType }-{animationType}-{dog.Direction}");
 		}
 
 		// private void OnMouseEnter() {
