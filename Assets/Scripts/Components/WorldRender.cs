@@ -19,6 +19,8 @@ namespace KOI
         
         private Tilemap _terrainTileMap;
         private Tilemap _treesTileMap;
+		private Vector3Int terrainTileMapOrigin;
+		private int2 tileMapOrigin;
 
         private Dictionary<TerrainType, TileBase> _terrainTiles;
         private Dictionary<VegetationType, Tile> _treeTiles;
@@ -26,7 +28,9 @@ namespace KOI
         private GameObject _dogsGameObject;
 
         private Dictionary<int, DogRenderData> _dogRenderData;
-		private Dictionary<Pack, GameObject> _packPrefabs;
+		private Dictionary<EntityType, GameObject> _packPrefabs;
+
+		// public static event EventHandler<OnDogMouseEventArgs> OnUpdateDisplayPanel;
 
 		private void SetupTilemapResources()
 		{
@@ -39,7 +43,7 @@ namespace KOI
 			{
 				[TerrainType.Water] = Resources.Load<RuleTile>("Tiles/Water Rule Tile"),
 				[TerrainType.Sand] = Resources.Load<RuleTile>("Tiles/Sand Rule Tile"),
-				[TerrainType.Ground] = Resources.Load<Tile>("Tiles/Grass"),
+				[TerrainType.Ground] = Resources.Load<WeightedRandomTile>("Tiles/Grass Variation Tile"),
 				[TerrainType.Mountain] = Resources.Load<RuleTile>("Tiles/Dirt Rule Tile"),
 				[TerrainType.Ice] = Resources.Load<Tile>("Tiles/Ice"),
 				[TerrainType.Test] = Resources.Load<Tile>("Tiles/Test")
@@ -51,20 +55,26 @@ namespace KOI
 				[VegetationType.BeachTree] = Resources.Load<Tile>("Tiles/Tree_Two"),
 				[VegetationType.PlainTree] = Resources.Load<Tile>("Tiles/Tree_One")
 			};
+
+			terrainTileMapOrigin = _terrainTileMap.origin;	// [Important!] A fix for Tilemap pivot offset issue causing blank gap at edges.
+			tileMapOrigin = new int2(terrainTileMapOrigin.x, terrainTileMapOrigin.y);
         }
 
         private void SetupDogResources()
 		{
             _dogsGameObject = GameObject.Find("World/Entities/Dogs");
 			_dogRenderData = new Dictionary<int, DogRenderData>();
-            _packPrefabs = new Dictionary<Pack, GameObject>
+
+			// [TODO:] See if this can be used to generate other entities as well
+            _packPrefabs = new Dictionary<EntityType, GameObject>
 			{
-				[Pack.Pack1] = Resources.Load<GameObject>("Prefabs/Entities/Dogs/Doggie"),
-				[Pack.Pack2] = Resources.Load<GameObject>("Prefabs/Entities/Dogs/Doggie")
+				[EntityType.Dog] = Resources.Load<GameObject>("Prefabs/Entities/Dogs/Doggie"),
+				[EntityType.Deer] = Resources.Load<GameObject>("Prefabs/Entities/Deers/Deer")
 			};
         }
 
-        private void Awake() {
+        private void Awake()
+		{
             SetupEvents();
             SetupTilemapResources();
             SetupDogResources();
@@ -79,6 +89,15 @@ namespace KOI
 			Dog.OnUpdateDogRenderPosition += UpdateDogRenderPosition;
         }
 
+        // private void GetHoveredEntity(object sender, OnHoverEntityArgs entity)
+        // {
+        //     if(entity.Type == "dog") {
+		// 		DogRenderData dog = _dogRenderData[entity.Id];
+		// 		DogAttributes dogAttributes = dog.WorldGameObject.Attribute;
+		// 		OnUpdateDisplayPanel?.Invoke(this, new OnDogMouseEventArgs { attribute =  });
+		// 	}
+        // }
+
         private void CreateDogRenderData(object sender, OnDogEventArgs eventArgs)
         {
 			Dog dog = eventArgs.Dog;
@@ -87,12 +106,20 @@ namespace KOI
 			Vector2 startPosition = GridToWorld(dog.Position);
 
 			dogRenderData.WorldGameObject = Instantiate(
-				_packPrefabs[dog.Pack],
+				_packPrefabs[dog.EntityType],
 				startPosition,
 				Quaternion.identity,
 				_dogsGameObject.transform
 			);
-			dogRenderData.WorldGameObject.name = "Dog" + dog.Pack + dog.Id;
+			// dogRenderData.WorldGameObject.name = Utils.GenerateRandomName() + "_" + dog.EntityType + dog.Id;
+			dogRenderData.WorldGameObject.name = "dog_" + dog.Id;
+			dogRenderData.WorldGameObject.AddComponent(typeof(BoxCollider2D));
+			dogRenderData.WorldGameObject.GetComponent<BoxCollider2D>().isTrigger = true;
+
+			// Attach Player Interaction Events Script to the Prefabs without making the Entities inherit Mono.
+			dogRenderData.WorldGameObject.AddComponent(typeof(KOI.EntityInteraction));
+
+			// dogRenderData.WorldGameObject.name = "Dog" + dog.EntityType + dog.Id;
 
 			// dogRenderData.Animator = dogRenderData.WorldGameObject.GetComponent<Animator>();
             // Debug.Log(dog.Id);
@@ -104,7 +131,8 @@ namespace KOI
             
         }
 
-        private void OnDisable() {
+        private void OnDisable()
+		{
             MapSystem.OnUpdateMapRender -= UpdateMapRender;
 			EntitySystem.OnCreateDog -= CreateDogRenderData;
 			
@@ -116,7 +144,7 @@ namespace KOI
         {
             foreach(Cell cell in eventArgs.WorldMap.Cells)
             {
-                Vector3Int tilemapPosition = new Vector3Int(cell.Position.x, cell.Position.y);
+                Vector3Int tilemapPosition = new Vector3Int(cell.Position.x + terrainTileMapOrigin.x , cell.Position.y + terrainTileMapOrigin.y);
                 _terrainTileMap.SetTile(tilemapPosition, _terrainTiles[cell.TerrainType]);
                 _treesTileMap.SetTile(tilemapPosition, _treeTiles[cell.VegetationType]);
             }
@@ -133,7 +161,7 @@ namespace KOI
 
 		private Vector3 GridToWorld(int2 position)
 		{
-			return GridToWorld(position.x, position.y);
+			return GridToWorld(position.x + terrainTileMapOrigin.x, position.y + terrainTileMapOrigin.y);
 		}
 
 		
@@ -157,7 +185,7 @@ namespace KOI
 			Vector3 startPosition = dogRenderData.WorldGameObject.transform.position;
 
 			Vector3 endPosition = GridToWorld(dog.Position);
-			// endPosition.z = dog.Id * 0.00001f;
+			// endPosition.z = dog.Id * 0.00001f;	// for isometric z sorting
 
 			// PlayAnimation(dog, DogAnimationType.Walk);
 
@@ -179,8 +207,13 @@ namespace KOI
 		{
 			DogRenderData dogRenderData = _dogRenderData[dog.Id];
 
-			// dogRenderData.Animator.Play($"Base Layer.{ dog.Pack }-{animationType}-{dog.Direction}");
+			// dogRenderData.Animator.Play($"Base Layer.{ dog.EntityType }-{animationType}-{dog.Direction}");
 		}
+
+		// private void OnMouseEnter() {
+		// 	object identity = GetEntityTypeIdFromName(name);
+		// 	OnUpdateDisplayPanel?.Invoke(this, new OnDogEventArgs { Dog = this });
+		// }
 
         
     }

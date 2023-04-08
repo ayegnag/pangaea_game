@@ -7,14 +7,14 @@ namespace KOI
 	public class Dog
 	{
 		private static int _nextDogId = 1;
-
+ 
 		public static event EventHandler<OnDogEventArgs> OnUpdateDogRenderDirection;
 		public static event EventHandler<OnDogEventArgs> OnUpdateDogRenderPosition;
 
 		public int Id { get; private set; }
 		public Direction Direction { get; set; }
 		public int2 Position { get; set; }
-		public Pack Pack { get; set; }
+		public EntityType EntityType { get; set; }
 
 		public int Cooldown { get; set; }
 
@@ -32,9 +32,12 @@ namespace KOI
 
 			Attributes = new DogAttributes
 			{
-				Health = 1,
+				Name =  Utils.GenerateRandomName(),
+				MaxHealth = 3,
+				Health = Utils.RandomRange(1, 3),
 				Strength = 1,
 				Speed = 1,
+				Feeling = Utils.RandomEnumValue<DogFeelStateType>()
 			};
 
 			_movementStates = new Dictionary<DogMovementStateType, DogMovementState>

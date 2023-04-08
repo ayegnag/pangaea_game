@@ -104,7 +104,7 @@ public class IslandTileMapGenerator : MonoBehaviour
     }
 
     private int GetTileIDFromNoise(float noiseValue)
-    {   
+    {
         float scaledNoise = noiseValue * TileCount;
         return Mathf.FloorToInt(scaledNoise);
     }

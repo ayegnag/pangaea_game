@@ -9,6 +9,6 @@ namespace KOI
         public static float EdgeSensitivity = 10f;
         public static float ZoomSpeed = 4f;
         public static float MinZoom = 5f;
-        public static float MaxZoom = 30f;
+        public static float MaxZoom = 100f;
     }
 }
