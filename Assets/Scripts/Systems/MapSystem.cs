@@ -182,10 +182,10 @@ namespace KOI
 					int y = endPosition.y;				
 					Cell cell = GetCell(x, y);
 					Debug.Log("searching for food " + cell.TerrainType);
-					if(cell.TerrainType == TerrainType.Test){ // change this to condition checking for actual food
-						foodDirections.Add(direction); 
-						Debug.Log("food found");
-					}
+					// if(cell.TerrainType == TerrainType.Test){ // change this to condition checking for actual food
+					// 	foodDirections.Add(direction); 
+					// 	Debug.Log("food found");
+					// }
 				}
 			}
 			return foodDirections;
